@@ -8,12 +8,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#4f46e5">
 <title>企業経営理論 一問一答</title>
-<link rel="manifest" href="data:application/json,{\"name\":\"企業経営理論一問一答\",\"short_name\":\"経営理論\",\"display\":\"standalone\",\"background_color\":\"#f8fafc\",\"theme_color\":\"#4f46e5\"}">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.12.7/Recharts.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
   * { -webkit-tap-highlight-color: transparent; }
   body { font-family: "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif; margin: 0; background: #f8fafc; overscroll-behavior: none; }
@@ -21,21 +20,21 @@
 </style>
 </head>
 <body>
-<div id="root"></div>
+<div id="root"><div style="display:flex;justify-content:center;align-items:center;height:100vh;color:#6366f1;font-size:18px;">読み込み中...</div></div>
 <script type="text/babel">
 const { useState, useMemo, useCallback, useRef, useEffect } = React;
 const { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip } = Recharts;
 
 const STORAGE_KEY = “kigyou_keiei_quiz_stats”;
 function loadStats() {
-try { const d = localStorage.getItem(STORAGE_KEY); return d ? JSON.parse(d) : {}; } catch { return {}; }
+try { var d = localStorage.getItem(STORAGE_KEY); return d ? JSON.parse(d) : {}; } catch(e) { return {}; }
 }
 function saveStats(s) {
-try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {}
+try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {}
 }
 
 const CATS = [“第1章 企業活動と経営戦略”, “第2章 事業戦略（競争戦略）”, “第3章 企業戦略（成長戦略）”, “第4章 その他の経営戦略”, “第5章 組織構造論”, “第6章 組織行動論”, “第7章 人的資源管理”, “第8章 労働関連法規”, “第9章 マーケティング理論の概要”, “第10章 様々なマーケティング戦略”];
-const SHORT_CATS = CATS.map((c,i) => “第”+(i+1)+“章”);
+const SHORT_CATS = CATS.map(function(c,i){ return “第”+(i+1)+“章”; });
 const QD = [
 [“企業はその社会的責任の遂行を前提として社会から存続されることを要求され、かつ、企業は、継続的な経済活動を行わなければならないことを何というか。”, “ゴーイングコンサーン”, 0],
 [“企業の利害関係者：企業活動に強いつながりを持ち、その存続にとって不可欠な主体や機関のことを何というか。”, “ステークホルダー”, 0],
@@ -448,45 +447,43 @@ const QD = [
 [“FSPの主な長所を4つ答えなさい。”, “個別対応効果、コスト削減効果、情報蓄積効果、囲い込み効果”, 9]
 ];
 
-const QS = QD.map((q,i)=>({id:i+1,question:q[0],answer:q[1],category:CATS[q[2]],catIdx:q[2]}));
+const QS = QD.map(function(q,i){ return {id:i+1,question:q[0],answer:q[1],category:CATS[q[2]],catIdx:q[2]}; });
 
 function shuffle(arr) {
-const a = […arr];
-for (let i = a.length - 1; i > 0; i–) {
-const j = Math.floor(Math.random() * (i + 1));
-[a[i], a[j]] = [a[j], a[i]];
+var a = arr.slice();
+for (var i = a.length - 1; i > 0; i–) {
+var j = Math.floor(Math.random() * (i + 1));
+var t = a[i]; a[i] = a[j]; a[j] = t;
 }
 return a;
 }
 
 function genChoices(q) {
-const same = QS.filter(x => x.catIdx === q.catIdx && x.id !== q.id);
-const other = QS.filter(x => x.catIdx !== q.catIdx);
-const pool = shuffle([…same, …shuffle(other)]);
-const used = new Set([q.answer]);
-const wrongs = [];
-for (const p of pool) {
-if (!used.has(p.answer) && wrongs.length < 3) {
-wrongs.push(p.answer);
-used.add(p.answer);
-}
+var same = QS.filter(function(x){ return x.catIdx === q.catIdx && x.id !== q.id; });
+var other = QS.filter(function(x){ return x.catIdx !== q.catIdx; });
+var pool = shuffle(same.concat(shuffle(other)));
+var used = {}; used[q.answer] = true;
+var wrongs = [];
+for (var i = 0; i < pool.length && wrongs.length < 3; i++) {
+if (!used[pool[i].answer]) { wrongs.push(pool[i].answer); used[pool[i].answer] = true; }
 }
 while (wrongs.length < 3) wrongs.push(”—”);
-return shuffle([q.answer, …wrongs]);
+return shuffle([q.answer].concat(wrongs));
 }
 
 function todayStr() { return new Date().toISOString().slice(0, 10); }
 function getStats(stats, id) { return stats[id] || { attempts: 0, correct: 0, lastResult: null, lastDate: null, bookmarked: false }; }
 
 function catMastery(stats, catIdx) {
-const qs = QS.filter(q => q.catIdx === catIdx);
+var qs = QS.filter(function(q){ return q.catIdx === catIdx; });
 if (qs.length === 0) return 0;
-const mastered = qs.filter(q => getStats(stats, q.id).lastResult === true).length;
+var mastered = qs.filter(function(q){ return getStats(stats, q.id).lastResult === true; }).length;
 return Math.round((mastered / qs.length) * 100);
 }
 
-function ChapterRadar({ stats }) {
-const data = CATS.map((c, i) => ({ subject: SHORT_CATS[i], value: catMastery(stats, i), fullMark: 100 }));
+function ChapterRadar(props) {
+var stats = props.stats;
+var data = CATS.map(function(c, i){ return { subject: SHORT_CATS[i], value: catMastery(stats, i), fullMark: 100 }; });
 return (
 <div style={{width:“100%”,height:260}}>
 <ResponsiveContainer>
@@ -495,15 +492,15 @@ return (
 <PolarAngleAxis dataKey=“subject” tick={{fontSize:11,fill:”#475569”}} />
 <PolarRadiusAxis angle={90} domain={[0,100]} tick={{fontSize:9,fill:”#94a3b8”}} />
 <Radar name="定着率" dataKey="value" stroke="#4f46e5" fill="#4f46e5" fillOpacity={0.25} strokeWidth={2} />
-<Tooltip formatter={(v) => v + “%”} />
+<Tooltip formatter={function(v){ return v + “%”; }} />
 </RadarChart>
 </ResponsiveContainer>
 </div>
 );
 }
 
-function ProgressBar({ current, total }) {
-const pct = total > 0 ? (current / total) * 100 : 0;
+function ProgressBar(props) {
+var pct = props.total > 0 ? (props.current / props.total) * 100 : 0;
 return (
 <div className="w-full bg-slate-200 rounded-full h-2">
 <div className=“h-2 rounded-full bg-indigo-500 transition-all duration-300” style={{width:pct+”%”}} />
@@ -511,50 +508,51 @@ return (
 );
 }
 
-function Settings({ stats, onClose, onReset, setStats }) {
-const fileRef = useRef(null);
-const handleExport = () => {
-const blob = new Blob([JSON.stringify(stats, null, 2)], {type:“application/json”});
-const url = URL.createObjectURL(blob);
-const a = document.createElement(“a”);
+function Settings(props) {
+var stats = props.stats, onClose = props.onClose, onReset = props.onReset, setStats = props.setStats;
+var fileRef = useRef(null);
+var handleExport = function() {
+var blob = new Blob([JSON.stringify(stats, null, 2)], {type:“application/json”});
+var url = URL.createObjectURL(blob);
+var a = document.createElement(“a”);
 a.href = url; a.download = “quiz_backup_” + todayStr() + “.json”; a.click();
 URL.revokeObjectURL(url);
 };
-const handleImport = (e) => {
-const file = e.target.files[0];
+var handleImport = function(e) {
+var file = e.target.files[0];
 if (!file) return;
-const reader = new FileReader();
-reader.onload = (ev) => {
+var reader = new FileReader();
+reader.onload = function(ev) {
 try {
-const data = JSON.parse(ev.target.result);
+var data = JSON.parse(ev.target.result);
 if (typeof data === “object” && data !== null) {
 if (confirm(“現在のデータを上書きして復元しますか？”)) {
 setStats(data); saveStats(data);
 alert(“履歴を復元しました”); onClose();
 }
 } else { alert(“無効なファイルです”); }
-} catch { alert(“ファイルの読み込みに失敗しました”); }
+} catch(err) { alert(“ファイルの読み込みに失敗しました”); }
 };
 reader.readAsText(file);
 e.target.value = “”;
 };
-const handleReset = () => {
+var handleReset = function() {
 if (confirm(“学習履歴をすべてリセットしますか？”)) {
 if (confirm(“この操作は取り消せません。実行前にバックアップをダウンロードします。”)) {
 handleExport();
-setTimeout(() => { onReset(); onClose(); }, 500);
+setTimeout(function(){ onReset(); onClose(); }, 500);
 }
 }
 };
 return (
 <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center" onClick={onClose}>
-<div className=“bg-white rounded-t-2xl w-full max-w-lg p-6 pb-10 space-y-3” onClick={e=>e.stopPropagation()}>
+<div className="bg-white rounded-t-2xl w-full max-w-lg p-6 pb-10 space-y-3" onClick={function(e){e.stopPropagation();}}>
 <div className="flex justify-between items-center mb-2">
 <h3 className="text-lg font-bold text-slate-800">設定</h3>
 <button onClick={onClose} className="text-slate-400 text-2xl leading-none">×</button>
 </div>
-<button onClick={handleExport} className="w-full py-3 px-4 bg-indigo-50 text-indigo-700 rounded-xl text-left font-medium">📥 履歴をバックアップ（JSON）</button>
-<button onClick={()=>fileRef.current?.click()} className=“w-full py-3 px-4 bg-indigo-50 text-indigo-700 rounded-xl text-left font-medium”>📤 履歴を復元（インポート）</button>
+<button onClick={handleExport} className="w-full py-3 px-4 bg-indigo-50 text-indigo-700 rounded-xl text-left font-medium">📥 履歴をバックアップ</button>
+<button onClick={function(){fileRef.current && fileRef.current.click();}} className=“w-full py-3 px-4 bg-indigo-50 text-indigo-700 rounded-xl text-left font-medium”>📤 履歴を復元（インポート）</button>
 <input ref={fileRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
 <button onClick={handleReset} className="w-full py-3 px-4 bg-rose-50 text-rose-600 rounded-xl text-left font-medium">🗑 学習履歴をリセット</button>
 <p className="text-xs text-slate-400 mt-2">※ ブラウザのデータ消去で履歴が消える場合があります。定期的なバックアップをおすすめします。</p>
@@ -563,32 +561,38 @@ return (
 );
 }
 
-function FilterScreen({ stats, onStart, onBack }) {
-const [selCats, setSelCats] = useState(new Set(CATS.map((*,i)=>i)));
-const [conds, setConds] = useState({wrong:false, freq:false, never:false, bm:false});
-const [count, setCount] = useState(“all”);
-const toggleCat = (i) => { const s = new Set(selCats); s.has(i) ? s.delete(i) : s.add(i); setSelCats(s); };
-const toggleAll = () => { setSelCats(selCats.size === CATS.length ? new Set() : new Set(CATS.map((*,i)=>i))); };
-const toggleCond = (k) => setConds({…conds, [k]: !conds[k]});
+function FilterScreen(props) {
+var stats = props.stats, onStart = props.onStart, onBack = props.onBack;
+var catIndices = CATS.map(function(_,i){return i;});
+var initSet = new Set(catIndices);
+var _s1 = useState(initSet); var selCats = _s1[0]; var setSelCats = _s1[1];
+var _s2 = useState({wrong:false, freq:false, never:false, bm:false}); var conds = _s2[0]; var setConds = _s2[1];
+var _s3 = useState(“all”); var count = _s3[0]; var setCount = _s3[1];
+var toggleCat = function(i) { var s = new Set(selCats); s.has(i) ? s.delete(i) : s.add(i); setSelCats(s); };
+var toggleAll = function() { setSelCats(selCats.size === CATS.length ? new Set() : new Set(catIndices)); };
+var toggleCond = function(k) { var c = Object.assign({}, conds); c[k] = !c[k]; setConds(c); };
 
-const filtered = useMemo(() => {
-let qs = QS.filter(q => selCats.has(q.catIdx));
-const anyCond = conds.wrong || conds.freq || conds.never;
+var filtered = useMemo(function() {
+var qs = QS.filter(function(q){ return selCats.has(q.catIdx); });
+var anyCond = conds.wrong || conds.freq || conds.never;
 if (anyCond) {
-qs = qs.filter(q => {
-const s = getStats(stats, q.id);
+qs = qs.filter(function(q) {
+var s = getStats(stats, q.id);
 if (conds.wrong && s.lastResult === false) return true;
 if (conds.freq && s.attempts >= 2 && (s.correct / s.attempts) < 0.5) return true;
 if (conds.never && s.correct === 0) return true;
 return false;
 });
 }
-if (conds.bm) qs = qs.filter(q => getStats(stats, q.id).bookmarked);
+if (conds.bm) qs = qs.filter(function(q){ return getStats(stats, q.id).bookmarked; });
 return qs;
 }, [selCats, conds, stats]);
 
-const finalCount = count === “all” ? filtered.length : Math.min(Number(count), filtered.length);
-const handleStart = () => { if (filtered.length === 0) return; onStart(shuffle(filtered).slice(0, finalCount)); };
+var finalCount = count === “all” ? filtered.length : Math.min(Number(count), filtered.length);
+var handleStart = function() { if (filtered.length === 0) return; onStart(shuffle(filtered).slice(0, finalCount)); };
+
+var condList = [[“wrong”,“間違えたまま（最後に不正解）”],[“freq”,“頻繁に間違えている（正答率50%未満）”],[“never”,“まだ正答していない”],[“bm”,“ブックマーク問題のみ”]];
+var countList = [“5”,“10”,“20”,“all”];
 
 return (
 <div className="min-h-screen bg-slate-50">
@@ -603,35 +607,42 @@ return (
 <button onClick={toggleAll} className="text-sm text-indigo-600 font-medium">{selCats.size === CATS.length ? “全解除” : “全選択”}</button>
 </div>
 <div className="grid grid-cols-1 gap-1.5">
-{CATS.map((c, i) => (
+{CATS.map(function(c, i) {
+return (
 <label key={i} className={“flex items-center gap-2 p-2.5 rounded-lg cursor-pointer text-sm “ + (selCats.has(i) ? “bg-indigo-50 text-indigo-700” : “bg-white text-slate-500”)}>
-<input type=“checkbox” checked={selCats.has(i)} onChange={()=>toggleCat(i)} className=“accent-indigo-600 w-4 h-4” />
+<input type="checkbox" checked={selCats.has(i)} onChange={function(){toggleCat(i);}} className="accent-indigo-600 w-4 h-4" />
 <span className="truncate">{c}</span>
-<span className="ml-auto text-xs opacity-60">{QS.filter(q=>q.catIdx===i).length}問</span>
+<span className="ml-auto text-xs opacity-60">{QS.filter(function(q){return q.catIdx===i;}).length}問</span>
 </label>
-))}
+);
+})}
 </div>
 </div>
 <div>
 <h3 className="font-bold text-slate-700 mb-2">絞り込み条件</h3>
 <div className="space-y-1.5">
-{[[“wrong”,“間違えたまま（最後に不正解）”],[“freq”,“頻繁に間違えている（正答率50%未満）”],[“never”,“まだ正答していない”],[“bm”,“ブックマーク問題のみ”]].map(([k,label])=>(
+{condList.map(function(item) {
+var k = item[0], label = item[1];
+return (
 <label key={k} className={“flex items-center gap-2 p-2.5 rounded-lg cursor-pointer text-sm “ + (conds[k] ? “bg-amber-50 text-amber-700” : “bg-white text-slate-500”)}>
-<input type=“checkbox” checked={conds[k]} onChange={()=>toggleCond(k)} className=“accent-amber-500 w-4 h-4” />
+<input type="checkbox" checked={conds[k]} onChange={function(){toggleCond(k);}} className="accent-amber-500 w-4 h-4" />
 {label}
 </label>
-))}
+);
+})}
 </div>
 </div>
 <div>
 <h3 className="font-bold text-slate-700 mb-2">出題数</h3>
 <div className="flex gap-2">
-{[“5”,“10”,“20”,“all”].map(v=>(
-<button key={v} onClick={()=>setCount(v)}
+{countList.map(function(v) {
+return (
+<button key={v} onClick={function(){setCount(v);}}
 className={“flex-1 py-2 rounded-lg text-sm font-medium “ + (count===v ? “bg-indigo-600 text-white” : “bg-white text-slate-600 border border-slate-200”)}>
 {v===“all” ? “全問” : v+“問”}
 </button>
-))}
+);
+})}
 </div>
 </div>
 <div className="bg-white rounded-xl p-4 text-center">
@@ -648,21 +659,22 @@ className={“w-full py-4 rounded-xl font-bold text-lg “ + (filtered.length > 
 );
 }
 
-function QuizScreen({ quiz, stats, onAnswer, onNext, onToggleBM, onFinish, onQuit }) {
-const q = quiz.qs[quiz.idx];
-const choices = quiz.choices[quiz.idx];
-const answered = quiz.answers[q.id] !== undefined;
-const result = quiz.answers[q.id];
-const bm = getStats(stats, q.id).bookmarked;
-useEffect(() => { window.scrollTo(0, 0); }, [quiz.idx]);
+function QuizScreen(props) {
+var quiz = props.quiz, stats = props.stats;
+var q = quiz.qs[quiz.idx];
+var choices = quiz.choices[quiz.idx];
+var answered = quiz.answers[q.id] !== undefined;
+var result = quiz.answers[q.id];
+var bm = getStats(stats, q.id).bookmarked;
+useEffect(function(){ window.scrollTo(0, 0); }, [quiz.idx]);
 
 return (
 <div className="min-h-screen bg-slate-50 flex flex-col">
 <div className="bg-indigo-600 text-white px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
-<button onClick={onQuit} className="text-2xl leading-none">←</button>
+<button onClick={props.onQuit} className="text-2xl leading-none">←</button>
 <span className="text-sm opacity-80 truncate flex-1">{q.category}</span>
 <span className="text-sm font-mono">{quiz.idx+1}/{quiz.qs.length}</span>
-<button onClick={()=>onToggleBM(q.id)} className={“text-xl “ + (bm ? “text-amber-300” : “text-white/40”)}>
+<button onClick={function(){props.onToggleBM(q.id);}} className={“text-xl “ + (bm ? “text-amber-300” : “text-white/40”)}>
 {bm ? “★” : “☆”}
 </button>
 </div>
@@ -672,14 +684,14 @@ return (
 <p className="text-slate-800 leading-relaxed whitespace-pre-wrap text-base">{q.question}</p>
 </div>
 <div className="space-y-2.5">
-{choices.map((c, ci) => {
-let cls = “w-full text-left p-4 rounded-xl border-2 text-sm leading-relaxed transition-all “;
+{choices.map(function(c, ci) {
+var cls = “w-full text-left p-4 rounded-xl border-2 text-sm leading-relaxed transition-all “;
 if (!answered) cls += “bg-white border-slate-200 active:border-indigo-400 active:bg-indigo-50”;
 else if (c === q.answer) cls += “bg-emerald-50 border-emerald-400 text-emerald-800”;
 else if (result && result.selected === c && !result.isCorrect) cls += “bg-rose-50 border-rose-400 text-rose-800”;
 else cls += “bg-slate-50 border-slate-100 text-slate-400”;
 return (
-<button key={ci} onClick={()=>!answered && onAnswer(q.id, c, c===q.answer)} className={cls} disabled={answered}>
+<button key={ci} onClick={function(){if(!answered) props.onAnswer(q.id, c, c===q.answer);}} className={cls} disabled={answered}>
 <span className="font-bold text-xs mr-2 opacity-60">{String.fromCharCode(65+ci)}</span>
 <span className="whitespace-pre-wrap">{c}</span>
 {answered && c === q.answer && <span className="ml-2">✓</span>}
@@ -693,9 +705,9 @@ return (
 {result.isCorrect ? “⭕ 正解！” : “❌ 不正解”}
 </div>
 {quiz.idx < quiz.qs.length - 1 ? (
-<button onClick={onNext} className="w-full py-3.5 bg-indigo-600 text-white rounded-xl font-bold text-base active:bg-indigo-700">次の問題へ →</button>
+<button onClick={props.onNext} className="w-full py-3.5 bg-indigo-600 text-white rounded-xl font-bold text-base active:bg-indigo-700">次の問題へ →</button>
 ) : (
-<button onClick={onFinish} className="w-full py-3.5 bg-indigo-600 text-white rounded-xl font-bold text-base active:bg-indigo-700">結果を見る 📊</button>
+<button onClick={props.onFinish} className="w-full py-3.5 bg-indigo-600 text-white rounded-xl font-bold text-base active:bg-indigo-700">結果を見る 📊</button>
 )}
 </div>
 )}
@@ -704,12 +716,13 @@ return (
 );
 }
 
-function ResultScreen({ quiz, stats, onReview, onHome }) {
-const total = quiz.qs.length;
-const correctCount = Object.values(quiz.answers).filter(a => a.isCorrect).length;
-const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
-const wrongs = quiz.qs.filter(q => quiz.answers[q.id] && !quiz.answers[q.id].isCorrect);
-const [expandedId, setExpandedId] = useState(null);
+function ResultScreen(props) {
+var quiz = props.quiz, stats = props.stats;
+var total = quiz.qs.length;
+var correctCount = Object.values(quiz.answers).filter(function(a){ return a.isCorrect; }).length;
+var pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+var wrongs = quiz.qs.filter(function(q){ return quiz.answers[q.id] && !quiz.answers[q.id].isCorrect; });
+var _e = useState(null); var expandedId = _e[0]; var setExpandedId = _e[1];
 return (
 <div className="min-h-screen bg-slate-50">
 <div className="bg-indigo-600 text-white px-4 py-3 text-center font-bold text-lg">学習結果</div>
@@ -726,9 +739,10 @@ return (
 <div>
 <h3 className="font-bold text-slate-700 mb-2">間違えた問題（{wrongs.length}問）</h3>
 <div className="space-y-2">
-{wrongs.map(q => (
+{wrongs.map(function(q) {
+return (
 <div key={q.id} className="bg-white rounded-xl border border-slate-100 overflow-hidden">
-<button onClick={()=>setExpandedId(expandedId===q.id?null:q.id)} className=“w-full text-left p-3 flex items-start gap-2”>
+<button onClick={function(){setExpandedId(expandedId===q.id?null:q.id);}} className=“w-full text-left p-3 flex items-start gap-2”>
 <span className="text-rose-400 mt-0.5">❌</span>
 <span className="text-sm text-slate-700 line-clamp-2 flex-1">{q.question}</span>
 <span className="text-slate-300 text-xs mt-0.5">{expandedId===q.id?“▲”:“▼”}</span>
@@ -740,30 +754,32 @@ return (
 </div>
 )}
 </div>
-))}
+);
+})}
 </div>
 </div>
 )}
 <div className="space-y-3 pt-2">
 {wrongs.length > 0 && (
-<button onClick={()=>onReview(wrongs)} className=“w-full py-3.5 bg-amber-500 text-white rounded-xl font-bold active:bg-amber-600”>間違えた問題を復習 ({wrongs.length}問)</button>
+<button onClick={function(){props.onReview(wrongs);}} className="w-full py-3.5 bg-amber-500 text-white rounded-xl font-bold active:bg-amber-600">間違えた問題を復習 ({wrongs.length}問)</button>
 )}
-<button onClick={onHome} className="w-full py-3.5 bg-indigo-600 text-white rounded-xl font-bold active:bg-indigo-700">ホームに戻る</button>
+<button onClick={props.onHome} className="w-full py-3.5 bg-indigo-600 text-white rounded-xl font-bold active:bg-indigo-700">ホームに戻る</button>
 </div>
 </div>
 </div>
 );
 }
 
-function HomeScreen({ stats, onChapter, onRandom, onFilter, onOpenSettings }) {
-const totalAnswered = QS.filter(q => getStats(stats, q.id).attempts > 0).length;
-const totalCorrect = QS.filter(q => getStats(stats, q.id).lastResult === true).length;
-const overallPct = QS.length > 0 ? Math.round((totalCorrect / QS.length) * 100) : 0;
+function HomeScreen(props) {
+var stats = props.stats;
+var totalAnswered = QS.filter(function(q){ return getStats(stats, q.id).attempts > 0; }).length;
+var totalCorrect = QS.filter(function(q){ return getStats(stats, q.id).lastResult === true; }).length;
+var overallPct = QS.length > 0 ? Math.round((totalCorrect / QS.length) * 100) : 0;
 return (
 <div className="min-h-screen bg-slate-50">
 <div className="bg-indigo-600 text-white px-4 py-4 flex justify-between items-center">
 <div><h1 className="text-lg font-bold">企業経営理論</h1><p className="text-indigo-200 text-xs">一問一答 409問</p></div>
-<button onClick={onOpenSettings} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-xl">⚙</button>
+<button onClick={props.onOpenSettings} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-xl">⚙</button>
 </div>
 <div className="max-w-lg mx-auto p-4 space-y-5">
 <div className="bg-white rounded-2xl p-4 shadow-sm">
@@ -774,18 +790,18 @@ return (
 </div>
 </div>
 <div className="grid grid-cols-2 gap-3">
-<button onClick={onRandom} className="col-span-2 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold text-base shadow-md active:opacity-90">🎲 ランダム10問チャレンジ</button>
-<button onClick={onFilter} className="col-span-2 py-3 bg-white border-2 border-indigo-200 text-indigo-600 rounded-xl font-bold text-sm active:bg-indigo-50">🔍 絞り込み出題</button>
+<button onClick={props.onRandom} className="col-span-2 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold text-base shadow-md active:opacity-90">🎲 ランダム10問チャレンジ</button>
+<button onClick={props.onFilter} className="col-span-2 py-3 bg-white border-2 border-indigo-200 text-indigo-600 rounded-xl font-bold text-sm active:bg-indigo-50">🔍 絞り込み出題</button>
 </div>
 <div>
 <h2 className="font-bold text-slate-700 mb-3">章を選んで学習</h2>
 <div className="space-y-2">
-{CATS.map((c, i) => {
-const qs = QS.filter(q => q.catIdx === i);
-const mastery = catMastery(stats, i);
-const answered = qs.filter(q => getStats(stats, q.id).attempts > 0).length;
+{CATS.map(function(c, i) {
+var qs = QS.filter(function(q){ return q.catIdx === i; });
+var mastery = catMastery(stats, i);
+var answered = qs.filter(function(q){ return getStats(stats, q.id).attempts > 0; }).length;
 return (
-<button key={i} onClick={()=>onChapter(i)} className=“w-full bg-white rounded-xl p-4 text-left shadow-sm border border-slate-100 active:bg-slate-50”>
+<button key={i} onClick={function(){props.onChapter(i);}} className="w-full bg-white rounded-xl p-4 text-left shadow-sm border border-slate-100 active:bg-slate-50">
 <div className="flex justify-between items-start mb-2">
 <span className="font-bold text-sm text-slate-800 flex-1 pr-2">{c}</span>
 <span className="text-xs text-slate-400 whitespace-nowrap">{answered}/{qs.length}問</span>
@@ -808,58 +824,77 @@ return (
 }
 
 function App() {
-const [screen, setScreen] = useState(“home”);
-const [stats, setStatsRaw] = useState(loadStats);
-const [quiz, setQuiz] = useState(null);
-const [showSettings, setShowSettings] = useState(false);
+var _s = useState(loadStats); var stats = _s[0]; var setStatsRaw = _s[1];
+var _sc = useState(“home”); var screen = _sc[0]; var setScreen = _sc[1];
+var _q = useState(null); var quiz = _q[0]; var setQuiz = _q[1];
+var _ss = useState(false); var showSettings = _ss[0]; var setShowSettings = _ss[1];
 
-const setStats = useCallback((valOrFn) => {
-setStatsRaw(prev => {
-const next = typeof valOrFn === “function” ? valOrFn(prev) : valOrFn;
+var setStats = useCallback(function(valOrFn) {
+setStatsRaw(function(prev) {
+var next = typeof valOrFn === “function” ? valOrFn(prev) : valOrFn;
 saveStats(next);
 return next;
 });
 }, []);
 
-const startQuiz = useCallback((qs) => {
-const choices = qs.map(q => genChoices(q));
-setQuiz({ qs, choices, idx: 0, answers: {} });
+var startQuiz = useCallback(function(qs) {
+var choices = qs.map(function(q){ return genChoices(q); });
+setQuiz({ qs: qs, choices: choices, idx: 0, answers: {} });
 setScreen(“quiz”);
 window.scrollTo(0, 0);
 }, []);
 
-const handleChapter = useCallback((catIdx) => startQuiz(QS.filter(q => q.catIdx === catIdx)), [startQuiz]);
-const handleRandom = useCallback(() => startQuiz(shuffle(QS).slice(0, 10)), [startQuiz]);
+var handleChapter = useCallback(function(catIdx) {
+startQuiz(QS.filter(function(q){ return q.catIdx === catIdx; }));
+}, [startQuiz]);
 
-const handleAnswer = useCallback((qid, selected, isCorrect) => {
-setStats(prev => {
-const s = getStats(prev, qid);
-return { …prev, [qid]: { …s, attempts: s.attempts + 1, correct: s.correct + (isCorrect ? 1 : 0), lastResult: isCorrect, lastDate: todayStr() }};
+var handleRandom = useCallback(function() {
+startQuiz(shuffle(QS).slice(0, 10));
+}, [startQuiz]);
+
+var handleAnswer = useCallback(function(qid, selected, isCorrect) {
+setStats(function(prev) {
+var s = getStats(prev, qid);
+var n = {}; for(var k in prev) n[k]=prev[k];
+n[qid] = { attempts: s.attempts + 1, correct: s.correct + (isCorrect ? 1 : 0), lastResult: isCorrect, lastDate: todayStr(), bookmarked: s.bookmarked };
+return n;
 });
-setQuiz(prev => ({ …prev, answers: { …prev.answers, [qid]: { selected, isCorrect }}}));
+setQuiz(function(prev) {
+var ans = {}; for(var k in prev.answers) ans[k]=prev.answers[k];
+ans[qid] = { selected: selected, isCorrect: isCorrect };
+return { qs: prev.qs, choices: prev.choices, idx: prev.idx, answers: ans };
+});
 }, [setStats]);
 
-const handleNext = useCallback(() => { setQuiz(prev => ({ …prev, idx: prev.idx + 1 })); }, []);
-const handleToggleBM = useCallback((qid) => {
-setStats(prev => { const s = getStats(prev, qid); return { …prev, [qid]: { …s, bookmarked: !s.bookmarked }}; });
+var handleNext = useCallback(function() {
+setQuiz(function(prev) { return { qs: prev.qs, choices: prev.choices, idx: prev.idx + 1, answers: prev.answers }; });
+}, []);
+
+var handleToggleBM = useCallback(function(qid) {
+setStats(function(prev) {
+var s = getStats(prev, qid);
+var n = {}; for(var k in prev) n[k]=prev[k];
+n[qid] = { attempts: s.attempts, correct: s.correct, lastResult: s.lastResult, lastDate: s.lastDate, bookmarked: !s.bookmarked };
+return n;
+});
 }, [setStats]);
 
-const handleFinish = useCallback(() => setScreen(“result”), []);
-const handleQuit = useCallback(() => {
-if (Object.keys(quiz?.answers || {}).length > 0) setScreen(“result”);
+var handleFinish = useCallback(function() { setScreen(“result”); }, []);
+var handleQuit = useCallback(function() {
+if (quiz && Object.keys(quiz.answers).length > 0) setScreen(“result”);
 else setScreen(“home”);
 }, [quiz]);
-const handleHome = useCallback(() => { setScreen(“home”); window.scrollTo(0, 0); }, []);
-const handleReview = useCallback((wrongs) => startQuiz(shuffle(wrongs)), [startQuiz]);
-const handleReset = useCallback(() => { setStats({}); }, [setStats]);
+var handleHome = useCallback(function() { setScreen(“home”); window.scrollTo(0, 0); }, []);
+var handleReview = useCallback(function(wrongs) { startQuiz(shuffle(wrongs)); }, [startQuiz]);
+var handleReset = useCallback(function() { setStats({}); }, [setStats]);
 
 return (
 <div className="min-h-screen bg-slate-50">
-{screen === “home” && <HomeScreen stats={stats} onChapter={handleChapter} onRandom={handleRandom} onFilter={()=>setScreen(“filter”)} onOpenSettings={()=>setShowSettings(true)} />}
+{screen === “home” && <HomeScreen stats={stats} onChapter={handleChapter} onRandom={handleRandom} onFilter={function(){setScreen(“filter”);}} onOpenSettings={function(){setShowSettings(true);}} />}
 {screen === “quiz” && quiz && <QuizScreen quiz={quiz} stats={stats} onAnswer={handleAnswer} onNext={handleNext} onToggleBM={handleToggleBM} onFinish={handleFinish} onQuit={handleQuit} />}
 {screen === “result” && quiz && <ResultScreen quiz={quiz} stats={stats} onReview={handleReview} onHome={handleHome} />}
 {screen === “filter” && <FilterScreen stats={stats} onStart={startQuiz} onBack={handleHome} />}
-{showSettings && <Settings stats={stats} setStats={setStats} onClose={()=>setShowSettings(false)} onReset={handleReset} />}
+{showSettings && <Settings stats={stats} setStats={setStats} onClose={function(){setShowSettings(false);}} onReset={handleReset} />}
 </div>
 );
 }
