@@ -8,33 +8,107 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#4f46e5">
 <title>企業経営理論 一問一答</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.12.7/Recharts.min.js"></script>
-<script src="https://cdn.tailwindcss.com"></script>
 <style>
-  * { -webkit-tap-highlight-color: transparent; }
-  body { font-family: "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif; margin: 0; background: #f8fafc; overscroll-behavior: none; }
-  .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;background:#f8fafc;overscroll-behavior:none;color:#1e293b}
+.app{min-height:100vh;max-width:480px;margin:0 auto}
+.header{background:#4f46e5;color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.header h1{font-size:18px;font-weight:700}
+.header small{color:#a5b4fc;font-size:11px}
+.header-back{font-size:24px;background:none;border:none;color:#fff;padding:4px 8px;cursor:pointer}
+.gear-btn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:20px;cursor:pointer}
+.content{padding:16px}
+.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.card-center{text-align:center}
+.section-title{font-weight:700;color:#334155;margin-bottom:12px;font-size:15px}
+.btn{display:block;width:100%;padding:14px;border-radius:12px;font-weight:700;font-size:15px;border:none;cursor:pointer;text-align:center}
+.btn-primary{background:#4f46e5;color:#fff}
+.btn-primary:active{background:#4338ca}
+.btn-gradient{background:linear-gradient(to right,#4f46e5,#7c3aed);color:#fff;box-shadow:0 4px 12px rgba(79,70,229,0.3)}
+.btn-outline{background:#fff;color:#4f46e5;border:2px solid #c7d2fe}
+.btn-outline:active{background:#eef2ff}
+.btn-amber{background:#f59e0b;color:#fff}
+.btn-amber:active{background:#d97706}
+.btn-danger{background:#fff1f2;color:#e11d48;text-align:left;padding:12px 16px}
+.btn-soft{background:#eef2ff;color:#4338ca;text-align:left;padding:12px 16px}
+.btn-disabled{background:#e2e8f0;color:#94a3b8}
+.btn+.btn{margin-top:10px}
+.chapter-btn{background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:16px;margin-bottom:8px;width:100%;text-align:left;cursor:pointer}
+.chapter-btn:active{background:#f8fafc}
+.chapter-name{font-weight:700;font-size:13px;color:#1e293b}
+.chapter-count{font-size:11px;color:#94a3b8}
+.chapter-top{display:flex;justify-content:space-between;align-items:start;margin-bottom:8px}
+.chapter-bar-wrap{display:flex;align-items:center;gap:10px}
+.chapter-bar{flex:1;height:8px;background:#f1f5f9;border-radius:99px;overflow:hidden}
+.chapter-bar-fill{height:100%;border-radius:99px;transition:width 0.3s}
+.chapter-pct{font-size:13px;font-weight:700;min-width:40px;text-align:right}
+.pct-high{color:#10b981}.pct-mid{color:#f59e0b}.pct-low{color:#94a3b8}
+.bar-high{background:#34d399}.bar-mid{background:#fbbf24}.bar-low{background:#cbd5e1}
+.progress-bar{width:100%;height:8px;background:#e2e8f0;overflow:hidden}
+.progress-fill{height:100%;background:#4f46e5;transition:width 0.3s}
+.quiz-header{display:flex;align-items:center;gap:8px;padding:12px 16px}
+.quiz-cat{font-size:13px;opacity:0.8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.quiz-num{font-size:13px;font-family:monospace}
+.bm-btn{font-size:20px;background:none;border:none;cursor:pointer}
+.bm-on{color:#fcd34d}.bm-off{color:rgba(255,255,255,0.3)}
+.question-box{background:#fff;border-radius:16px;padding:20px;border:1px solid #f1f5f9;margin-bottom:16px}
+.question-text{line-height:1.7;font-size:15px;white-space:pre-wrap}
+.choice-btn{display:block;width:100%;text-align:left;padding:14px 16px;border-radius:12px;border:2px solid #e2e8f0;background:#fff;margin-bottom:10px;font-size:13px;line-height:1.6;cursor:pointer}
+.choice-btn:active{border-color:#818cf8;background:#eef2ff}
+.choice-label{font-weight:700;font-size:12px;margin-right:6px;opacity:0.5}
+.choice-correct{background:#ecfdf5;border-color:#34d399;color:#065f46}
+.choice-wrong{background:#fff1f2;border-color:#fb7185;color:#9f1239}
+.choice-dim{background:#f8fafc;border-color:#f1f5f9;color:#94a3b8}
+.choice-disabled{pointer-events:none}
+.result-big{font-size:56px;font-weight:700}
+.result-sub{color:#64748b;font-size:17px;margin-top:8px}
+.result-row{display:flex;justify-content:center;gap:20px;margin-top:12px;font-size:14px}
+.text-green{color:#10b981}.text-red{color:#f43f5e}.text-amber{color:#f59e0b}
+.text-center{text-align:center}
+.wrong-item{background:#fff;border-radius:12px;border:1px solid #f1f5f9;margin-bottom:8px;overflow:hidden}
+.wrong-header{width:100%;text-align:left;padding:12px;display:flex;align-items:start;gap:8px;border:none;background:none;cursor:pointer;font-size:13px;color:#334155}
+.wrong-body{padding:0 12px 12px;border-top:1px solid #f1f5f9}
+.wrong-answer{background:#ecfdf5;color:#065f46;padding:8px;border-radius:8px;font-size:13px;margin-top:8px;white-space:pre-wrap}
+.filter-label{display:flex;align-items:center;gap:8px;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;margin-bottom:6px}
+.filter-on{background:#eef2ff;color:#4338ca}
+.filter-off{background:#fff;color:#64748b}
+.filter-amber-on{background:#fffbeb;color:#92400e}
+.filter-check{width:16px;height:16px;accent-color:#4f46e5}
+.filter-check-amber{accent-color:#f59e0b}
+.filter-count{margin-left:auto;font-size:11px;opacity:0.6}
+.count-btns{display:flex;gap:8px}
+.count-btn{flex:1;padding:8px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid #e2e8f0;background:#fff;color:#475569;cursor:pointer;text-align:center}
+.count-btn-active{background:#4f46e5;color:#fff;border-color:#4f46e5}
+.match-box{background:#fff;border-radius:12px;padding:16px;text-align:center;margin:16px 0}
+.match-num{font-size:28px;font-weight:700;color:#4f46e5}
+.match-label{font-size:13px;color:#64748b;margin-left:4px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:24px 24px 40px}
+.sheet-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.sheet-close{font-size:24px;background:none;border:none;color:#94a3b8;cursor:pointer}
+.sheet-note{font-size:11px;color:#94a3b8;margin-top:12px}
+.summary{text-align:center;font-size:13px;color:#64748b;margin-top:4px}
+.summary b{color:#4f46e5}
+.hidden{display:none}
+svg text{font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif}
+.mb8{margin-bottom:8px}.mb16{margin-bottom:16px}.mt8{margin-top:8px}.mt16{margin-top:16px}
 </style>
 </head>
 <body>
-<div id="root"><div style="display:flex;justify-content:center;align-items:center;height:100vh;color:#6366f1;font-size:18px;">読み込み中...</div></div>
+<div id="root"><div style="display:flex;justify-content:center;align-items:center;height:100vh;color:#6366f1;font-size:18px">読み込み中...</div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
 <script type="text/babel">
-const { useState, useMemo, useCallback, useRef, useEffect } = React;
-const { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip } = Recharts;
+var h = React.createElement;
+var useState = React.useState, useMemo = React.useMemo, useCallback = React.useCallback, useRef = React.useRef, useEffect = React.useEffect;
 
-const STORAGE_KEY = “kigyou_keiei_quiz_stats”;
-function loadStats() {
-try { var d = localStorage.getItem(STORAGE_KEY); return d ? JSON.parse(d) : {}; } catch(e) { return {}; }
-}
-function saveStats(s) {
-try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {}
-}
+var STORAGE_KEY = “kigyou_keiei_quiz_stats”;
+function loadStats() { try { var d = localStorage.getItem(STORAGE_KEY); return d ? JSON.parse(d) : {}; } catch(e) { return {}; } }
+function saveStats(s) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {} }
 
-const CATS = [“第1章 企業活動と経営戦略”, “第2章 事業戦略（競争戦略）”, “第3章 企業戦略（成長戦略）”, “第4章 その他の経営戦略”, “第5章 組織構造論”, “第6章 組織行動論”, “第7章 人的資源管理”, “第8章 労働関連法規”, “第9章 マーケティング理論の概要”, “第10章 様々なマーケティング戦略”];
-const SHORT_CATS = CATS.map(function(c,i){ return “第”+(i+1)+“章”; });
+var CATS = [“第1章 企業活動と経営戦略”,“第2章 事業戦略（競争戦略）”,“第3章 企業戦略（成長戦略）”,“第4章 その他の経営戦略”,“第5章 組織構造論”,“第6章 組織行動論”,“第7章 人的資源管理”,“第8章 労働関連法規”,“第9章 マーケティング理論の概要”,“第10章 様々なマーケティング戦略”];
+var SHORT = [“第1章”,“第2章”,“第3章”,“第4章”,“第5章”,“第6章”,“第7章”,“第8章”,“第9章”,“第10章”];
 const QD = [
 [“企業はその社会的責任の遂行を前提として社会から存続されることを要求され、かつ、企業は、継続的な経済活動を行わなければならないことを何というか。”, “ゴーイングコンサーン”, 0],
 [“企業の利害関係者：企業活動に強いつながりを持ち、その存続にとって不可欠な主体や機関のことを何というか。”, “ステークホルダー”, 0],
@@ -447,459 +521,219 @@ const QD = [
 [“FSPの主な長所を4つ答えなさい。”, “個別対応効果、コスト削減効果、情報蓄積効果、囲い込み効果”, 9]
 ];
 
-const QS = QD.map(function(q,i){ return {id:i+1,question:q[0],answer:q[1],category:CATS[q[2]],catIdx:q[2]}; });
+var QS = QD.map(function(q,i){return{id:i+1,question:q[0],answer:q[1],category:CATS[q[2]],catIdx:q[2]};});
+function shuffle(a){var r=a.slice();for(var i=r.length-1;i>0;i–){var j=Math.floor(Math.random()*(i+1));var t=r[i];r[i]=r[j];r[j]=t;}return r;}
+function genChoices(q){var same=QS.filter(function(x){return x.catIdx===q.catIdx&&x.id!==q.id;});var other=QS.filter(function(x){return x.catIdx!==q.catIdx;});var pool=shuffle(same.concat(shuffle(other)));var used={};used[q.answer]=true;var w=[];for(var i=0;i<pool.length&&w.length<3;i++){if(!used[pool[i].answer]){w.push(pool[i].answer);used[pool[i].answer]=true;}}while(w.length<3)w.push(”—”);return shuffle([q.answer].concat(w));}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function gs(stats,id){return stats[id]||{attempts:0,correct:0,lastResult:null,lastDate:null,bookmarked:false};}
+function catM(stats,ci){var qs=QS.filter(function(q){return q.catIdx===ci;});if(!qs.length)return 0;var m=qs.filter(function(q){return gs(stats,q.id).lastResult===true;}).length;return Math.round(m/qs.length*100);}
 
-function shuffle(arr) {
-var a = arr.slice();
-for (var i = a.length - 1; i > 0; i–) {
-var j = Math.floor(Math.random() * (i + 1));
-var t = a[i]; a[i] = a[j]; a[j] = t;
+function RadarSVG(props){
+var stats=props.stats;var cx=150,cy=140,r=100,n=10;
+var vals=[];for(var i=0;i<n;i++)vals.push(catM(stats,i));
+var pts=[];var labelPts=[];var gridLines=[];
+for(var i=0;i<n;i++){
+var angle=-Math.PI/2+2*Math.PI*i/n;
+var x=cx+r*Math.cos(angle);var y=cy+r*Math.sin(angle);
+pts.push({x:x,y:y,angle:angle});
+var lx=cx+(r+18)*Math.cos(angle);var ly=cy+(r+18)*Math.sin(angle);
+labelPts.push({x:lx,y:ly});
 }
-return a;
-}
-
-function genChoices(q) {
-var same = QS.filter(function(x){ return x.catIdx === q.catIdx && x.id !== q.id; });
-var other = QS.filter(function(x){ return x.catIdx !== q.catIdx; });
-var pool = shuffle(same.concat(shuffle(other)));
-var used = {}; used[q.answer] = true;
-var wrongs = [];
-for (var i = 0; i < pool.length && wrongs.length < 3; i++) {
-if (!used[pool[i].answer]) { wrongs.push(pool[i].answer); used[pool[i].answer] = true; }
-}
-while (wrongs.length < 3) wrongs.push(”—”);
-return shuffle([q.answer].concat(wrongs));
-}
-
-function todayStr() { return new Date().toISOString().slice(0, 10); }
-function getStats(stats, id) { return stats[id] || { attempts: 0, correct: 0, lastResult: null, lastDate: null, bookmarked: false }; }
-
-function catMastery(stats, catIdx) {
-var qs = QS.filter(function(q){ return q.catIdx === catIdx; });
-if (qs.length === 0) return 0;
-var mastered = qs.filter(function(q){ return getStats(stats, q.id).lastResult === true; }).length;
-return Math.round((mastered / qs.length) * 100);
-}
-
-function ChapterRadar(props) {
-var stats = props.stats;
-var data = CATS.map(function(c, i){ return { subject: SHORT_CATS[i], value: catMastery(stats, i), fullMark: 100 }; });
-return (
-<div style={{width:“100%”,height:260}}>
-<ResponsiveContainer>
-<RadarChart data={data} cx="50%" cy="50%" outerRadius="70%">
-<PolarGrid stroke="#cbd5e1" />
-<PolarAngleAxis dataKey=“subject” tick={{fontSize:11,fill:”#475569”}} />
-<PolarRadiusAxis angle={90} domain={[0,100]} tick={{fontSize:9,fill:”#94a3b8”}} />
-<Radar name="定着率" dataKey="value" stroke="#4f46e5" fill="#4f46e5" fillOpacity={0.25} strokeWidth={2} />
-<Tooltip formatter={function(v){ return v + “%”; }} />
-</RadarChart>
-</ResponsiveContainer>
-</div>
-);
-}
-
-function ProgressBar(props) {
-var pct = props.total > 0 ? (props.current / props.total) * 100 : 0;
-return (
-<div className="w-full bg-slate-200 rounded-full h-2">
-<div className=“h-2 rounded-full bg-indigo-500 transition-all duration-300” style={{width:pct+”%”}} />
-</div>
-);
-}
-
-function Settings(props) {
-var stats = props.stats, onClose = props.onClose, onReset = props.onReset, setStats = props.setStats;
-var fileRef = useRef(null);
-var handleExport = function() {
-var blob = new Blob([JSON.stringify(stats, null, 2)], {type:“application/json”});
-var url = URL.createObjectURL(blob);
-var a = document.createElement(“a”);
-a.href = url; a.download = “quiz_backup_” + todayStr() + “.json”; a.click();
-URL.revokeObjectURL(url);
-};
-var handleImport = function(e) {
-var file = e.target.files[0];
-if (!file) return;
-var reader = new FileReader();
-reader.onload = function(ev) {
-try {
-var data = JSON.parse(ev.target.result);
-if (typeof data === “object” && data !== null) {
-if (confirm(“現在のデータを上書きして復元しますか？”)) {
-setStats(data); saveStats(data);
-alert(“履歴を復元しました”); onClose();
-}
-} else { alert(“無効なファイルです”); }
-} catch(err) { alert(“ファイルの読み込みに失敗しました”); }
-};
-reader.readAsText(file);
-e.target.value = “”;
-};
-var handleReset = function() {
-if (confirm(“学習履歴をすべてリセットしますか？”)) {
-if (confirm(“この操作は取り消せません。実行前にバックアップをダウンロードします。”)) {
-handleExport();
-setTimeout(function(){ onReset(); onClose(); }, 500);
-}
-}
-};
-return (
-<div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center" onClick={onClose}>
-<div className="bg-white rounded-t-2xl w-full max-w-lg p-6 pb-10 space-y-3" onClick={function(e){e.stopPropagation();}}>
-<div className="flex justify-between items-center mb-2">
-<h3 className="text-lg font-bold text-slate-800">設定</h3>
-<button onClick={onClose} className="text-slate-400 text-2xl leading-none">×</button>
-</div>
-<button onClick={handleExport} className="w-full py-3 px-4 bg-indigo-50 text-indigo-700 rounded-xl text-left font-medium">📥 履歴をバックアップ</button>
-<button onClick={function(){fileRef.current && fileRef.current.click();}} className=“w-full py-3 px-4 bg-indigo-50 text-indigo-700 rounded-xl text-left font-medium”>📤 履歴を復元（インポート）</button>
-<input ref={fileRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
-<button onClick={handleReset} className="w-full py-3 px-4 bg-rose-50 text-rose-600 rounded-xl text-left font-medium">🗑 学習履歴をリセット</button>
-<p className="text-xs text-slate-400 mt-2">※ ブラウザのデータ消去で履歴が消える場合があります。定期的なバックアップをおすすめします。</p>
-</div>
-</div>
-);
-}
-
-function FilterScreen(props) {
-var stats = props.stats, onStart = props.onStart, onBack = props.onBack;
-var catIndices = CATS.map(function(_,i){return i;});
-var initSet = new Set(catIndices);
-var _s1 = useState(initSet); var selCats = _s1[0]; var setSelCats = _s1[1];
-var _s2 = useState({wrong:false, freq:false, never:false, bm:false}); var conds = _s2[0]; var setConds = _s2[1];
-var _s3 = useState(“all”); var count = _s3[0]; var setCount = _s3[1];
-var toggleCat = function(i) { var s = new Set(selCats); s.has(i) ? s.delete(i) : s.add(i); setSelCats(s); };
-var toggleAll = function() { setSelCats(selCats.size === CATS.length ? new Set() : new Set(catIndices)); };
-var toggleCond = function(k) { var c = Object.assign({}, conds); c[k] = !c[k]; setConds(c); };
-
-var filtered = useMemo(function() {
-var qs = QS.filter(function(q){ return selCats.has(q.catIdx); });
-var anyCond = conds.wrong || conds.freq || conds.never;
-if (anyCond) {
-qs = qs.filter(function(q) {
-var s = getStats(stats, q.id);
-if (conds.wrong && s.lastResult === false) return true;
-if (conds.freq && s.attempts >= 2 && (s.correct / s.attempts) < 0.5) return true;
-if (conds.never && s.correct === 0) return true;
-return false;
+var grids=[];
+[0.2,0.4,0.6,0.8,1.0].forEach(function(s){
+var gp=””;for(var i=0;i<n;i++){var a=-Math.PI/2+2*Math.PI*i/n;gp+=(i===0?“M”:“L”)+(cx+r*s*Math.cos(a))+”,”+(cy+r*s*Math.sin(a));}gp+=“Z”;
+grids.push(gp);
 });
+var dataPath=””;
+for(var i=0;i<n;i++){var a=-Math.PI/2+2*Math.PI*i/n;var v=vals[i]/100;dataPath+=(i===0?“M”:“L”)+(cx+r*v*Math.cos(a))+”,”+(cy+r*v*Math.sin(a));}
+dataPath+=“Z”;
+var lines=[];for(var i=0;i<n;i++)lines.push(<line key={i} x1={cx} y1={cy} x2={pts[i].x} y2={pts[i].y} stroke="#cbd5e1" strokeWidth="1"/>);
+return(
+<svg viewBox=“0 0 300 290” style={{width:“100%”,maxWidth:300,margin:“0 auto”,display:“block”}}>
+{grids.map(function(d,i){return <path key={i} d={d} fill="none" stroke="#e2e8f0" strokeWidth="1"/>;})}
+{lines}
+<path d={dataPath} fill="rgba(79,70,229,0.2)" stroke="#4f46e5" strokeWidth="2"/>
+{labelPts.map(function(p,i){return <text key={i} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle" fontSize="11" fill="#475569">{SHORT[i]}</text>;})}
+{pts.map(function(p,i){var v=vals[i]/100;var dx=cx+r*v*Math.cos(p.angle);var dy=cy+r*v*Math.sin(p.angle);return <circle key={i} cx={dx} cy={dy} r="3" fill="#4f46e5"/>;})}
+</svg>
+);
 }
-if (conds.bm) qs = qs.filter(function(q){ return getStats(stats, q.id).bookmarked; });
+
+function Settings(props){
+var stats=props.stats,onClose=props.onClose,onReset=props.onReset,setStats=props.setStats;
+var fileRef=useRef(null);
+var handleExport=function(){var b=new Blob([JSON.stringify(stats,null,2)],{type:“application/json”});var u=URL.createObjectURL(b);var a=document.createElement(“a”);a.href=u;a.download=“quiz_backup_”+todayStr()+”.json”;a.click();URL.revokeObjectURL(u);};
+var handleImport=function(e){var f=e.target.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(typeof d===“object”&&d!==null){if(confirm(“現在のデータを上書きして復元しますか？”)){setStats(d);saveStats(d);alert(“履歴を復元しました”);onClose();}}else{alert(“無効なファイルです”);}}catch(er){alert(“ファイルの読み込みに失敗しました”);}};rd.readAsText(f);e.target.value=””;};
+var handleReset=function(){if(confirm(“学習履歴をすべてリセットしますか？”)){if(confirm(“この操作は取り消せません。バックアップをダウンロードします。”)){handleExport();setTimeout(function(){onReset();onClose();},500);}}};
+return(
+<div className="overlay" onClick={onClose}><div className="sheet" onClick={function(e){e.stopPropagation();}}>
+<div className="sheet-top"><h3 style={{fontWeight:700,fontSize:17}}>設定</h3><button className="sheet-close" onClick={onClose}>×</button></div>
+<button className="btn btn-soft mb8" onClick={handleExport}>📥 履歴をバックアップ</button>
+<button className="btn btn-soft mb8" onClick={function(){fileRef.current&&fileRef.current.click();}}>📤 履歴を復元（インポート）</button>
+<input ref={fileRef} type="file" accept=".json" className="hidden" onChange={handleImport}/>
+<button className="btn btn-danger" onClick={handleReset}>🗑 学習履歴をリセット</button>
+<p className="sheet-note">※ ブラウザのデータ消去で履歴が消える場合があります。定期的なバックアップをおすすめします。</p>
+</div></div>
+);
+}
+
+function FilterScreen(props){
+var stats=props.stats,onStart=props.onStart,onBack=props.onBack;
+var _s1=useState(function(){var s=new Set();for(var i=0;i<10;i++)s.add(i);return s;});var selCats=_s1[0],setSelCats=_s1[1];
+var _s2=useState({wrong:false,freq:false,never:false,bm:false});var conds=_s2[0],setConds=_s2[1];
+var _s3=useState(“all”);var count=_s3[0],setCount=_s3[1];
+var toggleCat=function(i){var s=new Set(selCats);s.has(i)?s.delete(i):s.add(i);setSelCats(s);};
+var toggleAll=function(){if(selCats.size===10){setSelCats(new Set());}else{var s=new Set();for(var i=0;i<10;i++)s.add(i);setSelCats(s);}};
+var toggleCond=function(k){var c={};for(var x in conds)c[x]=conds[x];c[k]=!c[k];setConds(c);};
+var filtered=useMemo(function(){
+var qs=QS.filter(function(q){return selCats.has(q.catIdx);});
+if(conds.wrong||conds.freq||conds.never){qs=qs.filter(function(q){var s=gs(stats,q.id);if(conds.wrong&&s.lastResult===false)return true;if(conds.freq&&s.attempts>=2&&s.correct/s.attempts<0.5)return true;if(conds.never&&s.correct===0)return true;return false;});}
+if(conds.bm)qs=qs.filter(function(q){return gs(stats,q.id).bookmarked;});
 return qs;
-}, [selCats, conds, stats]);
-
-var finalCount = count === “all” ? filtered.length : Math.min(Number(count), filtered.length);
-var handleStart = function() { if (filtered.length === 0) return; onStart(shuffle(filtered).slice(0, finalCount)); };
-
-var condList = [[“wrong”,“間違えたまま（最後に不正解）”],[“freq”,“頻繁に間違えている（正答率50%未満）”],[“never”,“まだ正答していない”],[“bm”,“ブックマーク問題のみ”]];
-var countList = [“5”,“10”,“20”,“all”];
-
-return (
-<div className="min-h-screen bg-slate-50">
-<div className="bg-indigo-600 text-white px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
-<button onClick={onBack} className="text-2xl leading-none">←</button>
-<h2 className="font-bold text-lg">絞り込み出題</h2>
-</div>
-<div className="max-w-lg mx-auto p-4 space-y-5">
-<div>
-<div className="flex justify-between items-center mb-2">
-<h3 className="font-bold text-slate-700">出題範囲</h3>
-<button onClick={toggleAll} className="text-sm text-indigo-600 font-medium">{selCats.size === CATS.length ? “全解除” : “全選択”}</button>
-</div>
-<div className="grid grid-cols-1 gap-1.5">
-{CATS.map(function(c, i) {
-return (
-<label key={i} className={“flex items-center gap-2 p-2.5 rounded-lg cursor-pointer text-sm “ + (selCats.has(i) ? “bg-indigo-50 text-indigo-700” : “bg-white text-slate-500”)}>
-<input type="checkbox" checked={selCats.has(i)} onChange={function(){toggleCat(i);}} className="accent-indigo-600 w-4 h-4" />
-<span className="truncate">{c}</span>
-<span className="ml-auto text-xs opacity-60">{QS.filter(function(q){return q.catIdx===i;}).length}問</span>
-</label>
-);
-})}
-</div>
-</div>
-<div>
-<h3 className="font-bold text-slate-700 mb-2">絞り込み条件</h3>
-<div className="space-y-1.5">
-{condList.map(function(item) {
-var k = item[0], label = item[1];
-return (
-<label key={k} className={“flex items-center gap-2 p-2.5 rounded-lg cursor-pointer text-sm “ + (conds[k] ? “bg-amber-50 text-amber-700” : “bg-white text-slate-500”)}>
-<input type="checkbox" checked={conds[k]} onChange={function(){toggleCond(k);}} className="accent-amber-500 w-4 h-4" />
-{label}
-</label>
-);
-})}
-</div>
-</div>
-<div>
-<h3 className="font-bold text-slate-700 mb-2">出題数</h3>
-<div className="flex gap-2">
-{countList.map(function(v) {
-return (
-<button key={v} onClick={function(){setCount(v);}}
-className={“flex-1 py-2 rounded-lg text-sm font-medium “ + (count===v ? “bg-indigo-600 text-white” : “bg-white text-slate-600 border border-slate-200”)}>
-{v===“all” ? “全問” : v+“問”}
-</button>
-);
-})}
-</div>
-</div>
-<div className="bg-white rounded-xl p-4 text-center">
-<span className="text-2xl font-bold text-indigo-600">{filtered.length}</span>
-<span className="text-slate-500 text-sm ml-1">問が該当</span>
-{count !== “all” && filtered.length > 0 && <span className="text-slate-400 text-sm ml-2">（{finalCount}問出題）</span>}
-</div>
-<button onClick={handleStart} disabled={filtered.length===0}
-className={“w-full py-4 rounded-xl font-bold text-lg “ + (filtered.length > 0 ? “bg-indigo-600 text-white active:bg-indigo-700” : “bg-slate-200 text-slate-400”)}>
-この条件で出題する
-</button>
+},[selCats,conds,stats]);
+var fc=count===“all”?filtered.length:Math.min(Number(count),filtered.length);
+var start=function(){if(!filtered.length)return;onStart(shuffle(filtered).slice(0,fc));};
+var condList=[[“wrong”,“間違えたまま（最後に不正解）”],[“freq”,“頻繁に間違えている（正答率50%未満）”],[“never”,“まだ正答していない”],[“bm”,“ブックマーク問題のみ”]];
+return(
+<div className="app">
+<div className="header"><button className="header-back" onClick={onBack}>←</button><h1>絞り込み出題</h1><div></div></div>
+<div className="content">
+<div className="mb16"><div style={{display:“flex”,justifyContent:“space-between”,alignItems:“center”}} className=“mb8”><span className="section-title" style={{margin:0}}>出題範囲</span><button style={{background:“none”,border:“none”,color:”#4f46e5”,fontWeight:600,fontSize:13,cursor:“pointer”}} onClick={toggleAll}>{selCats.size===10?“全解除”:“全選択”}</button></div>
+{CATS.map(function(c,i){return <label key={i} className={“filter-label “+(selCats.has(i)?“filter-on”:“filter-off”)}><input type="checkbox" checked={selCats.has(i)} onChange={function(){toggleCat(i);}} className="filter-check"/><span style={{flex:1,overflow:“hidden”,textOverflow:“ellipsis”,whiteSpace:“nowrap”}}>{c}</span><span className="filter-count">{QS.filter(function(q){return q.catIdx===i;}).length}問</span></label>;})}</div>
+<div className="mb16"><div className="section-title">絞り込み条件</div>{condList.map(function(item){var k=item[0],l=item[1];return <label key={k} className={“filter-label “+(conds[k]?“filter-amber-on”:“filter-off”)}><input type="checkbox" checked={conds[k]} onChange={function(){toggleCond(k);}} className="filter-check filter-check-amber"/>{l}</label>;})}</div>
+<div className="mb16"><div className="section-title">出題数</div><div className="count-btns">{[“5”,“10”,“20”,“all”].map(function(v){return <button key={v} className={“count-btn “+(count===v?“count-btn-active”:””)} onClick={function(){setCount(v);}}>{v===“all”?“全問”:v+“問”}</button>;})}</div></div>
+<div className="match-box"><span className="match-num">{filtered.length}</span><span className="match-label">問が該当</span>{count!==“all”&&filtered.length>0&&<span style={{color:”#94a3b8”,fontSize:13,marginLeft:8}}>（{fc}問出題）</span>}</div>
+<button className={“btn “+(filtered.length?“btn-primary”:“btn-disabled”)} onClick={start} disabled={!filtered.length}>この条件で出題する</button>
 </div>
 </div>
 );
 }
 
-function QuizScreen(props) {
-var quiz = props.quiz, stats = props.stats;
-var q = quiz.qs[quiz.idx];
-var choices = quiz.choices[quiz.idx];
-var answered = quiz.answers[q.id] !== undefined;
-var result = quiz.answers[q.id];
-var bm = getStats(stats, q.id).bookmarked;
-useEffect(function(){ window.scrollTo(0, 0); }, [quiz.idx]);
-
-return (
-<div className="min-h-screen bg-slate-50 flex flex-col">
-<div className="bg-indigo-600 text-white px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
-<button onClick={props.onQuit} className="text-2xl leading-none">←</button>
-<span className="text-sm opacity-80 truncate flex-1">{q.category}</span>
-<span className="text-sm font-mono">{quiz.idx+1}/{quiz.qs.length}</span>
-<button onClick={function(){props.onToggleBM(q.id);}} className={“text-xl “ + (bm ? “text-amber-300” : “text-white/40”)}>
-{bm ? “★” : “☆”}
-</button>
+function QuizScreen(props){
+var quiz=props.quiz,stats=props.stats,q=quiz.qs[quiz.idx],choices=quiz.choices[quiz.idx];
+var answered=quiz.answers[q.id]!==undefined,result=quiz.answers[q.id],bm=gs(stats,q.id).bookmarked;
+useEffect(function(){window.scrollTo(0,0);},[quiz.idx]);
+var pct=quiz.qs.length>0?(quiz.idx+(answered?1:0))/quiz.qs.length*100:0;
+return(
+<div className="app">
+<div className=“header” style={{padding:0,flexDirection:“column”}}>
+<div style={{display:“flex”,alignItems:“center”,gap:8,padding:“12px 16px”,width:“100%”}}>
+<button className="header-back" onClick={props.onQuit}>←</button>
+<span className="quiz-cat">{q.category}</span>
+<span className="quiz-num">{quiz.idx+1}/{quiz.qs.length}</span>
+<button className={“bm-btn “+(bm?“bm-on”:“bm-off”)} onClick={function(){props.onToggleBM(q.id);}}>{bm?“★”:“☆”}</button>
 </div>
-<ProgressBar current={quiz.idx + (answered?1:0)} total={quiz.qs.length} />
-<div className="flex-1 max-w-lg mx-auto w-full p-4 space-y-4">
-<div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-<p className="text-slate-800 leading-relaxed whitespace-pre-wrap text-base">{q.question}</p>
+<div className="progress-bar"><div className=“progress-fill” style={{width:pct+”%”}}></div></div>
 </div>
-<div className="space-y-2.5">
-{choices.map(function(c, ci) {
-var cls = “w-full text-left p-4 rounded-xl border-2 text-sm leading-relaxed transition-all “;
-if (!answered) cls += “bg-white border-slate-200 active:border-indigo-400 active:bg-indigo-50”;
-else if (c === q.answer) cls += “bg-emerald-50 border-emerald-400 text-emerald-800”;
-else if (result && result.selected === c && !result.isCorrect) cls += “bg-rose-50 border-rose-400 text-rose-800”;
-else cls += “bg-slate-50 border-slate-100 text-slate-400”;
-return (
-<button key={ci} onClick={function(){if(!answered) props.onAnswer(q.id, c, c===q.answer);}} className={cls} disabled={answered}>
-<span className="font-bold text-xs mr-2 opacity-60">{String.fromCharCode(65+ci)}</span>
-<span className="whitespace-pre-wrap">{c}</span>
-{answered && c === q.answer && <span className="ml-2">✓</span>}
-</button>
-);
+<div className="content">
+<div className="question-box"><p className="question-text">{q.question}</p></div>
+{choices.map(function(c,ci){
+var cls=“choice-btn “;
+if(answered){cls+=“choice-disabled “;if(c===q.answer)cls+=“choice-correct”;else if(result&&result.selected===c&&!result.isCorrect)cls+=“choice-wrong”;else cls+=“choice-dim”;}
+return <button key={ci} className={cls} onClick={function(){if(!answered)props.onAnswer(q.id,c,c===q.answer);}}><span className="choice-label">{String.fromCharCode(65+ci)}</span><span style={{whiteSpace:“pre-wrap”}}>{c}</span>{answered&&c===q.answer&&<span style={{marginLeft:6}}>✓</span>}</button>;
 })}
-</div>
-{answered && (
-<div className="text-center pt-2">
-<div className={“text-lg font-bold mb-3 “ + (result.isCorrect ? “text-emerald-600” : “text-rose-600”)}>
-{result.isCorrect ? “⭕ 正解！” : “❌ 不正解”}
-</div>
-{quiz.idx < quiz.qs.length - 1 ? (
-<button onClick={props.onNext} className="w-full py-3.5 bg-indigo-600 text-white rounded-xl font-bold text-base active:bg-indigo-700">次の問題へ →</button>
-) : (
-<button onClick={props.onFinish} className="w-full py-3.5 bg-indigo-600 text-white rounded-xl font-bold text-base active:bg-indigo-700">結果を見る 📊</button>
-)}
-</div>
-)}
+{answered&&<div className="text-center mt16">
+<div style={{fontSize:17,fontWeight:700,marginBottom:12}} className={result.isCorrect?“text-green”:“text-red”}>{result.isCorrect?“⭕ 正解！”:“❌ 不正解”}</div>
+{quiz.idx<quiz.qs.length-1?<button className="btn btn-primary" onClick={props.onNext}>次の問題へ →</button>:<button className="btn btn-primary" onClick={props.onFinish}>結果を見る 📊</button>}
+</div>}
 </div>
 </div>
 );
 }
 
-function ResultScreen(props) {
-var quiz = props.quiz, stats = props.stats;
-var total = quiz.qs.length;
-var correctCount = Object.values(quiz.answers).filter(function(a){ return a.isCorrect; }).length;
-var pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
-var wrongs = quiz.qs.filter(function(q){ return quiz.answers[q.id] && !quiz.answers[q.id].isCorrect; });
-var _e = useState(null); var expandedId = _e[0]; var setExpandedId = _e[1];
-return (
-<div className="min-h-screen bg-slate-50">
-<div className="bg-indigo-600 text-white px-4 py-3 text-center font-bold text-lg">学習結果</div>
-<div className="max-w-lg mx-auto p-4 space-y-5">
-<div className="bg-white rounded-2xl p-8 text-center shadow-sm">
-<div className={“text-6xl font-bold “ + (pct >= 80 ? “text-emerald-500” : pct >= 50 ? “text-amber-500” : “text-rose-500”)}>{pct}<span className="text-2xl">%</span></div>
-<div className="text-slate-500 mt-2 text-lg">{correctCount} / {total} 正解</div>
-<div className="mt-4 flex justify-center gap-6 text-sm">
-<span className="text-emerald-600">⭕ {correctCount}問</span>
-<span className="text-rose-500">❌ {total - correctCount}問</span>
+function ResultScreen(props){
+var quiz=props.quiz;var total=quiz.qs.length;
+var cc=Object.values(quiz.answers).filter(function(a){return a.isCorrect;}).length;
+var pct=total>0?Math.round(cc/total*100):0;
+var wrongs=quiz.qs.filter(function(q){return quiz.answers[q.id]&&!quiz.answers[q.id].isCorrect;});
+var _e=useState(null);var expId=_e[0],setExpId=_e[1];
+return(
+<div className="app">
+<div className=“header” style={{justifyContent:“center”}}><h1>学習結果</h1></div>
+<div className="content">
+<div className="card card-center" style={{padding:32}}>
+<div className={“result-big “+(pct>=80?“text-green”:pct>=50?“text-amber”:“text-red”)}>{pct}<span style={{fontSize:24}}>%</span></div>
+<div className="result-sub">{cc} / {total} 正解</div>
+<div className="result-row"><span className="text-green">⭕ {cc}問</span><span className="text-red">❌ {total-cc}問</span></div>
 </div>
-</div>
-{wrongs.length > 0 && (
-<div>
-<h3 className="font-bold text-slate-700 mb-2">間違えた問題（{wrongs.length}問）</h3>
-<div className="space-y-2">
-{wrongs.map(function(q) {
-return (
-<div key={q.id} className="bg-white rounded-xl border border-slate-100 overflow-hidden">
-<button onClick={function(){setExpandedId(expandedId===q.id?null:q.id);}} className=“w-full text-left p-3 flex items-start gap-2”>
-<span className="text-rose-400 mt-0.5">❌</span>
-<span className="text-sm text-slate-700 line-clamp-2 flex-1">{q.question}</span>
-<span className="text-slate-300 text-xs mt-0.5">{expandedId===q.id?“▲”:“▼”}</span>
+{wrongs.length>0&&<div>
+<div className="section-title">間違えた問題（{wrongs.length}問）</div>
+{wrongs.map(function(q){return <div key={q.id} className="wrong-item">
+<button className=“wrong-header” onClick={function(){setExpId(expId===q.id?null:q.id);}}>
+<span style={{color:”#fb7185”}}>❌</span><span style={{flex:1}}>{q.question.substring(0,60)}…</span><span style={{color:”#cbd5e1”,fontSize:11}}>{expId===q.id?“▲”:“▼”}</span>
 </button>
-{expandedId===q.id && (
-<div className="px-3 pb-3 border-t border-slate-100 pt-2">
-<div className="text-xs text-slate-400 mb-1">正答：</div>
-<div className="text-sm text-emerald-700 bg-emerald-50 p-2 rounded-lg whitespace-pre-wrap">{q.answer}</div>
-</div>
-)}
-</div>
-);
-})}
-</div>
-</div>
-)}
-<div className="space-y-3 pt-2">
-{wrongs.length > 0 && (
-<button onClick={function(){props.onReview(wrongs);}} className="w-full py-3.5 bg-amber-500 text-white rounded-xl font-bold active:bg-amber-600">間違えた問題を復習 ({wrongs.length}問)</button>
-)}
-<button onClick={props.onHome} className="w-full py-3.5 bg-indigo-600 text-white rounded-xl font-bold active:bg-indigo-700">ホームに戻る</button>
+{expId===q.id&&<div className="wrong-body"><div style={{fontSize:11,color:”#94a3b8”}}>正答：</div><div className="wrong-answer">{q.answer}</div></div>}
+</div>;})}
+</div>}
+<div className="mt16">
+{wrongs.length>0&&<button className="btn btn-amber" onClick={function(){props.onReview(wrongs);}}>間違えた問題を復習 ({wrongs.length}問)</button>}
+<button className="btn btn-primary" onClick={props.onHome}>ホームに戻る</button>
 </div>
 </div>
 </div>
 );
 }
 
-function HomeScreen(props) {
-var stats = props.stats;
-var totalAnswered = QS.filter(function(q){ return getStats(stats, q.id).attempts > 0; }).length;
-var totalCorrect = QS.filter(function(q){ return getStats(stats, q.id).lastResult === true; }).length;
-var overallPct = QS.length > 0 ? Math.round((totalCorrect / QS.length) * 100) : 0;
-return (
-<div className="min-h-screen bg-slate-50">
-<div className="bg-indigo-600 text-white px-4 py-4 flex justify-between items-center">
-<div><h1 className="text-lg font-bold">企業経営理論</h1><p className="text-indigo-200 text-xs">一問一答 409問</p></div>
-<button onClick={props.onOpenSettings} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-xl">⚙</button>
+function HomeScreen(props){
+var stats=props.stats;
+var ta=QS.filter(function(q){return gs(stats,q.id).attempts>0;}).length;
+var tc=QS.filter(function(q){return gs(stats,q.id).lastResult===true;}).length;
+var op=QS.length>0?Math.round(tc/QS.length*100):0;
+return(
+<div className="app">
+<div className="header"><div><h1>企業経営理論</h1><small>一問一答 409問</small></div><button className="gear-btn" onClick={props.onOpenSettings}>⚙</button></div>
+<div className="content">
+<div className="card card-center">
+<div className=“section-title” style={{textAlign:“center”}}>章別定着率</div>
+<RadarSVG stats={stats}/>
+<div className="summary">学習済 <b>{ta}</b>/409問　定着率 <b>{op}%</b></div>
 </div>
-<div className="max-w-lg mx-auto p-4 space-y-5">
-<div className="bg-white rounded-2xl p-4 shadow-sm">
-<h2 className="text-sm font-bold text-slate-500 mb-1 text-center">章別定着率</h2>
-<ChapterRadar stats={stats} />
-<div className="text-center mt-1 text-sm text-slate-500">
-学習済 <span className="font-bold text-indigo-600">{totalAnswered}</span>/409問　定着率 <span className="font-bold text-indigo-600">{overallPct}%</span>
-</div>
-</div>
-<div className="grid grid-cols-2 gap-3">
-<button onClick={props.onRandom} className="col-span-2 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold text-base shadow-md active:opacity-90">🎲 ランダム10問チャレンジ</button>
-<button onClick={props.onFilter} className="col-span-2 py-3 bg-white border-2 border-indigo-200 text-indigo-600 rounded-xl font-bold text-sm active:bg-indigo-50">🔍 絞り込み出題</button>
-</div>
-<div>
-<h2 className="font-bold text-slate-700 mb-3">章を選んで学習</h2>
-<div className="space-y-2">
-{CATS.map(function(c, i) {
-var qs = QS.filter(function(q){ return q.catIdx === i; });
-var mastery = catMastery(stats, i);
-var answered = qs.filter(function(q){ return getStats(stats, q.id).attempts > 0; }).length;
-return (
-<button key={i} onClick={function(){props.onChapter(i);}} className="w-full bg-white rounded-xl p-4 text-left shadow-sm border border-slate-100 active:bg-slate-50">
-<div className="flex justify-between items-start mb-2">
-<span className="font-bold text-sm text-slate-800 flex-1 pr-2">{c}</span>
-<span className="text-xs text-slate-400 whitespace-nowrap">{answered}/{qs.length}問</span>
-</div>
-<div className="flex items-center gap-3">
-<div className="flex-1 bg-slate-100 rounded-full h-2">
-<div className={“h-2 rounded-full transition-all “ + (mastery >= 80 ? “bg-emerald-400” : mastery >= 40 ? “bg-amber-400” : “bg-slate-300”)} style={{width:mastery+”%”}} />
-</div>
-<span className={“text-sm font-bold min-w-[3rem] text-right “ + (mastery >= 80 ? “text-emerald-500” : mastery >= 40 ? “text-amber-500” : “text-slate-400”)}>{mastery}%</span>
-</div>
-</button>
-);
+<button className="btn btn-gradient mb8" onClick={props.onRandom}>🎲 ランダム10問チャレンジ</button>
+<button className="btn btn-outline mb16" onClick={props.onFilter}>🔍 絞り込み出題</button>
+<div className="section-title">章を選んで学習</div>
+{CATS.map(function(c,i){
+var qs=QS.filter(function(q){return q.catIdx===i;});var m=catM(stats,i);var ans=qs.filter(function(q){return gs(stats,q.id).attempts>0;}).length;
+var pc=m>=80?“pct-high”:m>=40?“pct-mid”:“pct-low”;var bc=m>=80?“bar-high”:m>=40?“bar-mid”:“bar-low”;
+return <button key={i} className="chapter-btn" onClick={function(){props.onChapter(i);}}>
+<div className="chapter-top"><span className="chapter-name">{c}</span><span className="chapter-count">{ans}/{qs.length}問</span></div>
+<div className="chapter-bar-wrap"><div className="chapter-bar"><div className={“chapter-bar-fill “+bc} style={{width:m+”%”}}></div></div><span className={“chapter-pct “+pc}>{m}%</span></div>
+</button>;
 })}
 </div>
 </div>
-</div>
-<div className="h-8" />
-</div>
 );
 }
 
-function App() {
-var _s = useState(loadStats); var stats = _s[0]; var setStatsRaw = _s[1];
-var _sc = useState(“home”); var screen = _sc[0]; var setScreen = _sc[1];
-var _q = useState(null); var quiz = _q[0]; var setQuiz = _q[1];
-var _ss = useState(false); var showSettings = _ss[0]; var setShowSettings = _ss[1];
-
-var setStats = useCallback(function(valOrFn) {
-setStatsRaw(function(prev) {
-var next = typeof valOrFn === “function” ? valOrFn(prev) : valOrFn;
-saveStats(next);
-return next;
-});
-}, []);
-
-var startQuiz = useCallback(function(qs) {
-var choices = qs.map(function(q){ return genChoices(q); });
-setQuiz({ qs: qs, choices: choices, idx: 0, answers: {} });
-setScreen(“quiz”);
-window.scrollTo(0, 0);
-}, []);
-
-var handleChapter = useCallback(function(catIdx) {
-startQuiz(QS.filter(function(q){ return q.catIdx === catIdx; }));
-}, [startQuiz]);
-
-var handleRandom = useCallback(function() {
-startQuiz(shuffle(QS).slice(0, 10));
-}, [startQuiz]);
-
-var handleAnswer = useCallback(function(qid, selected, isCorrect) {
-setStats(function(prev) {
-var s = getStats(prev, qid);
-var n = {}; for(var k in prev) n[k]=prev[k];
-n[qid] = { attempts: s.attempts + 1, correct: s.correct + (isCorrect ? 1 : 0), lastResult: isCorrect, lastDate: todayStr(), bookmarked: s.bookmarked };
-return n;
-});
-setQuiz(function(prev) {
-var ans = {}; for(var k in prev.answers) ans[k]=prev.answers[k];
-ans[qid] = { selected: selected, isCorrect: isCorrect };
-return { qs: prev.qs, choices: prev.choices, idx: prev.idx, answers: ans };
-});
-}, [setStats]);
-
-var handleNext = useCallback(function() {
-setQuiz(function(prev) { return { qs: prev.qs, choices: prev.choices, idx: prev.idx + 1, answers: prev.answers }; });
-}, []);
-
-var handleToggleBM = useCallback(function(qid) {
-setStats(function(prev) {
-var s = getStats(prev, qid);
-var n = {}; for(var k in prev) n[k]=prev[k];
-n[qid] = { attempts: s.attempts, correct: s.correct, lastResult: s.lastResult, lastDate: s.lastDate, bookmarked: !s.bookmarked };
-return n;
-});
-}, [setStats]);
-
-var handleFinish = useCallback(function() { setScreen(“result”); }, []);
-var handleQuit = useCallback(function() {
-if (quiz && Object.keys(quiz.answers).length > 0) setScreen(“result”);
-else setScreen(“home”);
-}, [quiz]);
-var handleHome = useCallback(function() { setScreen(“home”); window.scrollTo(0, 0); }, []);
-var handleReview = useCallback(function(wrongs) { startQuiz(shuffle(wrongs)); }, [startQuiz]);
-var handleReset = useCallback(function() { setStats({}); }, [setStats]);
-
-return (
-<div className="min-h-screen bg-slate-50">
-{screen === “home” && <HomeScreen stats={stats} onChapter={handleChapter} onRandom={handleRandom} onFilter={function(){setScreen(“filter”);}} onOpenSettings={function(){setShowSettings(true);}} />}
-{screen === “quiz” && quiz && <QuizScreen quiz={quiz} stats={stats} onAnswer={handleAnswer} onNext={handleNext} onToggleBM={handleToggleBM} onFinish={handleFinish} onQuit={handleQuit} />}
-{screen === “result” && quiz && <ResultScreen quiz={quiz} stats={stats} onReview={handleReview} onHome={handleHome} />}
-{screen === “filter” && <FilterScreen stats={stats} onStart={startQuiz} onBack={handleHome} />}
-{showSettings && <Settings stats={stats} setStats={setStats} onClose={function(){setShowSettings(false);}} onReset={handleReset} />}
+function App(){
+var _s=useState(loadStats);var stats=_s[0],setStatsRaw=_s[1];
+var _sc=useState(“home”);var screen=_sc[0],setScreen=_sc[1];
+var _q=useState(null);var quiz=_q[0],setQuiz=_q[1];
+var _ss=useState(false);var showSettings=_ss[0],setShowSettings=_ss[1];
+var setStats=useCallback(function(v){setStatsRaw(function(p){var n=typeof v===“function”?v(p):v;saveStats(n);return n;});},[]);
+var startQuiz=useCallback(function(qs){setQuiz({qs:qs,choices:qs.map(function(q){return genChoices(q);}),idx:0,answers:{}});setScreen(“quiz”);window.scrollTo(0,0);},[]);
+var handleChapter=useCallback(function(ci){startQuiz(QS.filter(function(q){return q.catIdx===ci;}));},[startQuiz]);
+var handleRandom=useCallback(function(){startQuiz(shuffle(QS).slice(0,10));},[startQuiz]);
+var handleAnswer=useCallback(function(qid,sel,ok){
+setStats(function(p){var s=gs(p,qid);var n={};for(var k in p)n[k]=p[k];n[qid]={attempts:s.attempts+1,correct:s.correct+(ok?1:0),lastResult:ok,lastDate:todayStr(),bookmarked:s.bookmarked};return n;});
+setQuiz(function(p){var a={};for(var k in p.answers)a[k]=p.answers[k];a[qid]={selected:sel,isCorrect:ok};return{qs:p.qs,choices:p.choices,idx:p.idx,answers:a};});
+},[setStats]);
+var handleNext=useCallback(function(){setQuiz(function(p){return{qs:p.qs,choices:p.choices,idx:p.idx+1,answers:p.answers};});},[]);
+var handleToggleBM=useCallback(function(qid){setStats(function(p){var s=gs(p,qid);var n={};for(var k in p)n[k]=p[k];n[qid]={attempts:s.attempts,correct:s.correct,lastResult:s.lastResult,lastDate:s.lastDate,bookmarked:!s.bookmarked};return n;});},[setStats]);
+var handleFinish=useCallback(function(){setScreen(“result”);},[]);
+var handleQuit=useCallback(function(){if(quiz&&Object.keys(quiz.answers).length>0)setScreen(“result”);else setScreen(“home”);},[quiz]);
+var handleHome=useCallback(function(){setScreen(“home”);window.scrollTo(0,0);},[]);
+var handleReview=useCallback(function(w){startQuiz(shuffle(w));},[startQuiz]);
+return(
+<div>
+{screen===“home”&&<HomeScreen stats={stats} onChapter={handleChapter} onRandom={handleRandom} onFilter={function(){setScreen(“filter”);}} onOpenSettings={function(){setShowSettings(true);}}/>}
+{screen===“quiz”&&quiz&&<QuizScreen quiz={quiz} stats={stats} onAnswer={handleAnswer} onNext={handleNext} onToggleBM={handleToggleBM} onFinish={handleFinish} onQuit={handleQuit}/>}
+{screen===“result”&&quiz&&<ResultScreen quiz={quiz} stats={stats} onReview={handleReview} onHome={handleHome}/>}
+{screen===“filter”&&<FilterScreen stats={stats} onStart={startQuiz} onBack={handleHome}/>}
+{showSettings&&<Settings stats={stats} setStats={setStats} onClose={function(){setShowSettings(false);}} onReset={function(){setStats({});}}/>}
 </div>
 );
 }
-
-ReactDOM.createRoot(document.getElementById(“root”)).render(<App />);
+ReactDOM.createRoot(document.getElementById(“root”)).render(<App/>);
 </script>
 
 </body>
